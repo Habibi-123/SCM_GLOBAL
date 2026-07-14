@@ -6,6 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Watchlist;
+use App\Models\Country;
+use App\Models\Article;
 
 class User extends Authenticatable
 {
@@ -44,5 +49,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Relasi ke tabel watchlists
+     */
+    public function watchlists(): HasMany
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
+     * Relasi many-to-many ke Country melalui tabel watchlists
+     */
+    public function watchedCountries(): BelongsToMany
+    {
+        return $this->belongsToMany(Country::class, 'watchlists')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Relasi ke artikel yang ditulis user
+     */
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Article::class);
     }
 }
