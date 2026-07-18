@@ -33,9 +33,12 @@ return [
         ],
     ],
 
-    // Tambahkan ini
     'restcountries' => [
         'key' => env('RESTCOUNTRIES_API_KEY'),
+    ],
+
+    'gnews' => [
+        'key' => env('GNEWS_API_KEY'),
     ],
 
 ];
