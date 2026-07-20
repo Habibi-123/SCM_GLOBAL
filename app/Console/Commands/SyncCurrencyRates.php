@@ -15,6 +15,7 @@ class SyncCurrencyRates extends Command
     public function handle(ExchangeRateService $service): int
     {
         $base = strtoupper($this->option('base'));
+
         $this->info("Mengambil kurs mata uang berbasis {$base}...");
 
         $rates = $service->getRates($base);
@@ -28,10 +29,12 @@ class SyncCurrencyRates extends Command
         $bar->start();
 
         foreach ($rates as $targetCurrency => $rate) {
-            CurrencyRate::updateOrCreate(
-                ['base_currency' => $base, 'target_currency' => $targetCurrency],
-                ['rate' => $rate, 'fetched_at' => now()]
-            );
+            CurrencyRate::create([
+                'base_currency'   => $base,
+                'target_currency' => $targetCurrency,
+                'rate'            => $rate,
+                'fetched_at'      => now(),
+            ]);
 
             $bar->advance();
         }
