@@ -1,4 +1,5 @@
 <x-app-layout>
+    
     <x-slot name="header">
         <h4 class="fw-bold mb-0">Global Country Dashboard</h4>
     </x-slot>

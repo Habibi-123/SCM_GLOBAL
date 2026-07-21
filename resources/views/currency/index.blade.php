@@ -5,9 +5,41 @@
 
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
-            <h6 class="fw-semibold mb-3">Tren kurs: {{ $base }} → {{ $target }}</h6>
+            <form method="GET">
+                <label class="form-label small text-muted">Pilih negara</label>
+                <select name="country" class="form-select" onchange="this.form.submit()">
+                    @foreach ($countries as $c)
+                        <option value="{{ $c->code }}" {{ $selectedCode === $c->code ? 'selected' : '' }}>
+                            {{ $c->name }} ({{ $c->currency_code }})
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h6 class="fw-semibold mb-1">
+                Tren kurs: {{ $base }} → {{ $target }}
+                @if ($selectedCountry)
+                    <span class="text-muted fw-normal">({{ $selectedCountry->name }})</span>
+                @endif
+            </h6>
 
             @if ($history->count() > 1)
+                @php
+                    $first = $history->first()->rate;
+                    $last = $history->last()->rate;
+                    $change = $first != 0 ? (($last - $first) / $first) * 100 : 0;
+                @endphp
+                <p class="mb-3">
+                    <span class="fs-4 fw-bold">{{ number_format($last, 4) }}</span>
+                    <span class="badge bg-{{ $change >= 0 ? 'success' : 'danger' }}">
+                        {{ $change >= 0 ? '▲' : '▼' }} {{ number_format(abs($change), 2) }}%
+                    </span>
+                    <small class="text-muted d-block mt-1">Perubahan dalam periode data tersedia</small>
+                </p>
                 <canvas id="currencyChart" height="80"></canvas>
             @else
                 <p class="text-muted">Data histori belum cukup untuk grafik.</p>
@@ -26,7 +58,7 @@
                 </thead>
                 <tbody>
                     @foreach ($latestRates as $rate)
-                        <tr>
+                        <tr class="{{ $rate->target_currency === $target ? 'table-primary' : '' }}">
                             <td class="ps-3">{{ $rate->target_currency }}</td>
                             <td class="text-end pe-3">{{ number_format($rate->rate, 4) }}</td>
                         </tr>

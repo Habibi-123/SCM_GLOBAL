@@ -18,7 +18,7 @@ class RiskScoringService
         $weatherScore = $this->scoreWeather($country);
         $inflationScore = $this->scoreInflation($country);
         $newsScore = $this->scoreNews($country);
-        $currencyScore = $this->scoreCurrency();
+        $currencyScore = $this->scoreCurrency($country);
 
         $totalScore = ($weatherScore * $this->weatherWeight)
             + ($inflationScore * $this->inflationWeight)
@@ -130,9 +130,40 @@ class RiskScoringService
 
     protected function scoreCurrency(): float
     {
-        // Placeholder netral.
-        // Nanti dapat dikembangkan menggunakan histori currency_rates
-        // untuk menghitung volatilitas kurs.
+        if (!$country->currency_code) {
+        return 50; // tidak ada mata uang (misal Antarctica), anggap netral
+    }
+
+    $rates = \App\Models\CurrencyRate::where('base_currency', 'USD')
+        ->where('target_currency', $country->currency_code)
+        ->orderBy('fetched_at')
+        ->pluck('rate')
+        ->map(fn ($r) => (float) $r);
+
+    // Butuh minimal 2 titik data untuk bisa menghitung volatilitas.
+    // Kalau cuma ada 1 snapshot (belum ada histori), tidak bisa dihitung → netral.
+    if ($rates->count() < 2) {
         return 50;
+    }
+
+    $mean = $rates->avg();
+
+    if ($mean == 0) {
+        return 50;
+    }
+
+    // Standar deviasi manual (tidak ada helper bawaan Laravel Collection untuk ini)
+    $variance = $rates->reduce(fn ($carry, $rate) => $carry + pow($rate - $mean, 2), 0) / $rates->count();
+    $stdDev = sqrt($variance);
+
+    // Coefficient of variation dalam persen: seberapa besar fluktuasi
+    // relatif terhadap rata-rata kursnya
+    $coefficientOfVariation = ($stdDev / $mean) * 100;
+
+    // Skala ke 0-100: kurs mata uang mayor biasanya berfluktuasi <1% dalam
+    // rentang pendek, jadi kita kalikan faktor skala supaya sensitif
+    $score = min(100, $coefficientOfVariation * 20);
+
+    return $score;
     }
 }

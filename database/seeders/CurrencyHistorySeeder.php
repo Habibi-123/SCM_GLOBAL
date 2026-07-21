@@ -9,35 +9,52 @@ class CurrencyHistorySeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil rate IDR terkini sebagai basis, lalu buat variasi histori
-        // untuk 14 hari terakhir supaya grafik tren ada bentuknya.
-        // Catatan: ini DATA SIMULASI untuk demo, bukan data historis asli
-        // (API gratis kita cuma kasih snapshot terkini, bukan histori).
-        $latestIdr = CurrencyRate::where('base_currency', 'USD')
-            ->where('target_currency', 'IDR')
-            ->latest('fetched_at')
-            ->first();
+        // Ambil snapshot TERBARU untuk setiap mata uang (hasil currency:sync),
+        // lalu jadikan basis untuk membuat variasi histori 14 hari.
+        // Catatan: ini DATA SIMULASI untuk keperluan demo (menghitung volatilitas
+        // di Risk Scoring Engine), BUKAN data kurs historis asli — karena API
+        // gratis yang kita pakai tidak menyediakan data historis sungguhan.
+        $latestRates = CurrencyRate::where('base_currency', 'USD')
+            ->whereIn('id', function ($query) {
+                $query->selectRaw('MAX(id)')
+                    ->from('currency_rates')
+                    ->where('base_currency', 'USD')
+                    ->groupBy('target_currency');
+            })
+            ->get();
 
-        if (!$latestIdr) {
-            $this->command->warn('Belum ada data USD-IDR. Jalankan currency:sync dulu.');
+        if ($latestRates->isEmpty()) {
+            $this->command->warn('Belum ada data kurs sama sekali. Jalankan currency:sync dulu.');
             return;
         }
 
-        $baseRate = (float) $latestIdr->rate;
+        $bar = $this->command->getOutput()->createProgressBar($latestRates->count());
+        $bar->start();
 
-        for ($daysAgo = 14; $daysAgo >= 1; $daysAgo--) {
-            // Variasi acak kecil (±1%) supaya grafik terlihat wajar, bukan garis lurus
-            $variation = $baseRate * (rand(-100, 100) / 10000);
+        foreach ($latestRates as $latest) {
+            $baseRate = (float) $latest->rate;
 
-            CurrencyRate::create([
-                'base_currency' => 'USD',
-                'target_currency' => 'IDR',
-                'rate' => round($baseRate + $variation, 2),
-                'fetched_at' => now()->subDays($daysAgo),
-                'created_at' => now()->subDays($daysAgo),
-            ]);
+            // Variasi acak berbeda-beda per mata uang, supaya tidak semua negara
+            // punya volatilitas yang persis sama (lebih realistis untuk demo)
+            $volatilityFactor = rand(50, 300) / 10000; // antara 0.5% - 3%
+
+            for ($daysAgo = 14; $daysAgo >= 1; $daysAgo--) {
+                $variation = $baseRate * (rand(-100, 100) / 100 * $volatilityFactor);
+
+                CurrencyRate::create([
+                    'base_currency' => 'USD',
+                    'target_currency' => $latest->target_currency,
+                    'rate' => round($baseRate + $variation, 6),
+                    'fetched_at' => now()->subDays($daysAgo),
+                    'created_at' => now()->subDays($daysAgo),
+                ]);
+            }
+
+            $bar->advance();
         }
 
-        $this->command->info('14 hari data histori kurs USD-IDR berhasil dibuat (data simulasi untuk demo).');
+        $bar->finish();
+        $this->command->newLine();
+        $this->command->info($latestRates->count() . ' mata uang berhasil dibuat data histori 14 hari (data simulasi untuk demo).');
     }
 }

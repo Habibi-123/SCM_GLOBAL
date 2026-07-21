@@ -62,7 +62,7 @@
                 <div class="card-body">
                     <small class="text-muted d-block mb-1">Populasi</small>
                     <h5 class="fw-semibold mb-0">
-                        @if ($country->population)
+                        @if (!is_null($country->population))
                             {{ number_format($country->population / 1e6, 1) }}M
                         @else
                             <span class="text-muted">N/A</span>

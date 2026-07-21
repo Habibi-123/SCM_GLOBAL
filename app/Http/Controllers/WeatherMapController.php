@@ -14,7 +14,11 @@ class WeatherMapController extends Controller
 
     public function index()
     {
-        return view('weather.index');
+        $countries = Country::whereNotNull('latitude')->whereNotNull('longitude')
+            ->orderBy('name')
+            ->get(['code', 'name', 'latitude', 'longitude']);
+
+        return view('weather.index', compact('countries'));
     }
 
     public function data(Request $request, OpenMeteoService $service)
