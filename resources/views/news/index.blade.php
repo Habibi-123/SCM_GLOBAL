@@ -81,7 +81,7 @@
                         <small class="text-muted">
                             {{ $article->source }} &bull;
                             {{ $article->published_at?->diffForHumans() }} &bull;
-                            <span class="badge bg-light text-dark border">{{ ucfirst($article->category) }}</span>
+                            <span class="badge bg-secondary text-white border-0">{{ ucfirst($article->category) }}</span>
                         </small>
                     </div>
                     <span class="badge bg-{{ match($article->sentiment) {

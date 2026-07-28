@@ -58,7 +58,7 @@
         <div class="col-md-4">
             <a href="{{ route('admin.users.index') }}" class="card border-0 shadow-sm text-decoration-none h-100">
                 <div class="card-body">
-                    <h6 class="fw-semibold text-dark mb-1">Kelola Users</h6>
+                    <h6 class="fw-semibold text-white mb-1">Kelola Users</h6>
                     <small class="text-muted">Tambah, edit, hapus user & atur role</small>
                 </div>
             </a>
@@ -66,7 +66,7 @@
         <div class="col-md-4">
             <a href="{{ route('admin.ports.index') }}" class="card border-0 shadow-sm text-decoration-none h-100">
                 <div class="card-body">
-                    <h6 class="fw-semibold text-dark mb-1">Kelola Pelabuhan</h6>
+                    <h6 class="fw-semibold text-white mb-1">Kelola Pelabuhan</h6>
                     <small class="text-muted">Kelola dataset pelabuhan</small>
                 </div>
             </a>
@@ -74,7 +74,7 @@
         <div class="col-md-4">
             <a href="{{ route('admin.articles.index') }}" class="card border-0 shadow-sm text-decoration-none h-100">
                 <div class="card-body">
-                    <h6 class="fw-semibold text-dark mb-1">Kelola Artikel</h6>
+                    <h6 class="fw-semibold text-white mb-1">Kelola Artikel</h6>
                     <small class="text-muted">Tulis & kelola artikel analisis</small>
                 </div>
             </a>

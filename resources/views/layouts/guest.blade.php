@@ -6,11 +6,11 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
-<body class="d-flex align-items-center justify-content-center bg-light" style="min-height: 100vh;">
+<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
     <div class="container" style="max-width: 480px;">
         <div class="text-center mb-4">
             <a href="/" class="text-decoration-none">
-                <h3 class="fw-bold text-dark">Supply Chain Risk Platform</h3>
+                <h3 class="fw-bold text-white gradient-text">Supply Chain Risk Platform</h3>
             </a>
         </div>
         <div class="card shadow-sm border-0">

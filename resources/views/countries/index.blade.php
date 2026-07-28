@@ -24,7 +24,7 @@
                                 <img src="{{ $country->flag_url }}" alt="{{ $country->name }}"
                                      class="mb-2" style="width: 60px; height: 40px; object-fit: cover;">
                             @endif
-                            <h6 class="fw-semibold text-dark mb-1">{{ $country->name }}</h6>
+                            <h6 class="fw-semibold text-white mb-1">{{ $country->name }}</h6>
                             <small class="text-muted">{{ $country->region }}</small>
                         </div>
                     </div>

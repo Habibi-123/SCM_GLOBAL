@@ -9,7 +9,7 @@ $success:   #34d399;
 $danger:    #f43f5e;
 $warning:   #f59e0b;
 $info:      #06b6d4;
-$dark:      #081c17;
+$dark:      #ffffff;
 $light:     #e6f7f3;
 
 $body-bg:   #081c17;
@@ -570,6 +570,7 @@ header.bg-white {
 // ─────────────────────────────────────────────────────
 //  UTILITY CLASSES
 // ─────────────────────────────────────────────────────
+.text-dark         { color: #ffffff !important; }
 .text-aqua        { color: var(--aqua-primary) !important; }
 .text-muted-aqua  { color: var(--text-muted) !important; }
 .bg-aqua-soft     { background: var(--aqua-glow-soft) !important; }
