@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 
 class SyncCurrencyRates extends Command
 {
-    protected $signature = 'currency:sync {--base=USD}';
+    protected $signature = 'sync:currency-rates {--base=USD}';
 
     protected $description = 'Sinkronisasi kurs mata uang dari ExchangeRate API';
 

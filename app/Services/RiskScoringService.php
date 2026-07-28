@@ -128,7 +128,7 @@ class RiskScoringService
         return (($positive * 20) + ($neutral * 50) + ($negative * 80)) / $total;
     }
 
-    protected function scoreCurrency(): float
+    protected function scoreCurrency(Country $country): float
     {
         if (!$country->currency_code) {
         return 50; // tidak ada mata uang (misal Antarctica), anggap netral

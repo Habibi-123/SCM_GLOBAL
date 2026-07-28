@@ -48,24 +48,30 @@ class CountryNewsService
 
     protected function fetchAndStore(Country $country): void
     {
-        $articles = $this->gNewsService->searchByCountry($country->name);
+        try {
+            $articles = $this->gNewsService->searchByCountry($country->name);
 
-        foreach ($articles as $item) {
-            $sentiment = $this->sentimentService->analyze($item['title'] ?? '');
+            foreach ($articles as $item) {
+                if (empty($item['url'])) continue;
 
-            NewsArticle::updateOrCreate(
-                ['url' => $item['url']],
-                [
-                    'country_id' => $country->id,
-                    'title' => $item['title'] ?? '-',
-                    'source' => $item['source']['name'] ?? null,
-                    'category' => 'country-specific',
-                    'positive_count' => $sentiment['positive_count'],
-                    'negative_count' => $sentiment['negative_count'],
-                    'sentiment' => $sentiment['sentiment'],
-                    'published_at' => $item['publishedAt'] ?? null,
-                ]
-            );
+                $sentiment = $this->sentimentService->analyze($item['title'] ?? '');
+
+                NewsArticle::updateOrCreate(
+                    ['url' => $item['url']],
+                    [
+                        'country_id' => $country->id,
+                        'title' => $item['title'] ?? '-',
+                        'source' => $item['source']['name'] ?? null,
+                        'category' => 'country-specific',
+                        'positive_count' => $sentiment['positive_count'],
+                        'negative_count' => $sentiment['negative_count'],
+                        'sentiment' => $sentiment['sentiment'],
+                        'published_at' => isset($item['publishedAt']) ? \Carbon\Carbon::parse($item['publishedAt']) : null,
+                    ]
+                );
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Fetch news failed for {$country->name}: " . $e->getMessage());
         }
     }
 }

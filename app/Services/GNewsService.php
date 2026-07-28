@@ -17,27 +17,32 @@ class GNewsService
 
     public function search(string $query, int $max = 10): array
     {
-        $response = Http::timeout(15)
-            ->retry(2, 500, throw: false)
-            ->get($this->baseUrl, [
-                'q' => $query,
-                'lang' => 'en',
-                'max' => $max,
-                'sortby' => 'publishedAt',
-                'apikey' => $this->apiKey,
-            ]);
+        try {
+            $response = Http::timeout(10)
+                ->retry(1, 300, throw: false)
+                ->get($this->baseUrl, [
+                    'q' => $query,
+                    'lang' => 'en',
+                    'max' => $max,
+                    'sortby' => 'publishedAt',
+                    'apikey' => $this->apiKey,
+                ]);
 
-        if ($response->failed()) {
-            Log::error('GNewsService: gagal fetch berita', [
-                'query' => $query,
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
+            if ($response->failed()) {
+                Log::error('GNewsService: gagal fetch berita', [
+                    'query' => $query,
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
 
+                return [];
+            }
+
+            return $response->json('articles') ?? [];
+        } catch (\Throwable $e) {
+            Log::warning('GNewsService exception: ' . $e->getMessage());
             return [];
         }
-
-        return $response->json('articles') ?? [];
     }
 
     /**

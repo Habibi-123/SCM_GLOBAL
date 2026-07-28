@@ -29,15 +29,32 @@ class SentimentAnalysisService
         $cleanText = preg_replace('/[^\w\s]/', ' ', $cleanText); // hapus tanda baca
         $words = preg_split('/\s+/', trim($cleanText));
 
+        $positiveWordsMap = array_flip($positiveWords);
+        $negativeWordsMap = array_flip($negativeWords);
+        $negations = ['not', 'no', 'never', 'neither', 'nor', 'without', 'lack', 'non'];
+
         $positiveCount = 0;
         $negativeCount = 0;
+        $wordCount = count($words);
 
-        foreach ($words as $word) {
-            if (in_array($word, $positiveWords, true)) {
-                $positiveCount++;
-            }
-            if (in_array($word, $negativeWords, true)) {
-                $negativeCount++;
+        for ($i = 0; $i < $wordCount; $i++) {
+            $word = $words[$i];
+            if (empty($word)) continue;
+
+            $isNegated = ($i > 0 && in_array($words[$i - 1], $negations, true));
+
+            if (isset($positiveWordsMap[$word])) {
+                if ($isNegated) {
+                    $negativeCount++;
+                } else {
+                    $positiveCount++;
+                }
+            } elseif (isset($negativeWordsMap[$word])) {
+                if ($isNegated) {
+                    $positiveCount++;
+                } else {
+                    $negativeCount++;
+                }
             }
         }
 
