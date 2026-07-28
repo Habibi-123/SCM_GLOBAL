@@ -3,7 +3,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-3">
                 @if ($country->flag_url)
-                    <img src="{{ $country->flag_url }}" alt="{{ $country->name }}" style="width: 40px;">
+                    <img src="{{ $country->flag_url }}" alt="{{ $country->name }}" style="width: 40px; height: 26px; object-fit: cover;" class="rounded shadow-sm" loading="lazy" decoding="async" width="40" height="26">
                 @endif
                 <h4 class="fw-bold mb-0">{{ $country->name }}</h4>
             </div>

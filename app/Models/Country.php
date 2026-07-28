@@ -17,6 +17,14 @@ class Country extends Model
         'latitude', 'longitude',
     ];
 
+    public function getFlagUrlAttribute(?string $value): ?string
+    {
+        if (!empty($this->code_alpha2)) {
+            return 'https://flagcdn.com/w80/' . strtolower($this->code_alpha2) . '.png';
+        }
+        return $value;
+    }
+
     public function economicIndicators(): HasMany
     {
         return $this->hasMany(EconomicIndicator::class);

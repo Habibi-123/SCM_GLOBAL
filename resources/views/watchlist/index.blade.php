@@ -14,7 +14,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center gap-2 mb-3">
                             @if ($country->flag_url)
-                                <img src="{{ $country->flag_url }}" alt="{{ $country->name }}" style="width: 32px;">
+                                <img src="{{ $country->flag_url }}" alt="{{ $country->name }}" style="width: 32px; height: 21px; object-fit: cover;" class="rounded shadow-sm" loading="lazy" decoding="async" width="32" height="21">
                             @endif
                             <h6 class="fw-semibold mb-0">{{ $country->name }}</h6>
                         </div>

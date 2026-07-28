@@ -17,8 +17,8 @@ Artisan::command('inspire', function () {
 // Sinkronisasi cuaca setiap 3 jam
 Schedule::command('sync:weather')->everyThreeHours()->withoutOverlapping();
 
-// Sinkronisasi kurs mata uang setiap 6 jam
-Schedule::command('sync:currency-rates')->everySixHours()->withoutOverlapping();
+// Sinkronisasi kurs mata uang setiap jam
+Schedule::command('sync:currency-rates')->hourly()->withoutOverlapping();
 
 // Ambil berita terbaru setiap jam
 Schedule::command('sync:news')->hourly()->withoutOverlapping();

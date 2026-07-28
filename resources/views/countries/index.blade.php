@@ -22,7 +22,8 @@
                         <div class="card-body text-center">
                             @if ($country->flag_url)
                                 <img src="{{ $country->flag_url }}" alt="{{ $country->name }}"
-                                     class="mb-2" style="width: 60px; height: 40px; object-fit: cover;">
+                                     class="mb-2 rounded shadow-sm" style="width: 60px; height: 40px; object-fit: cover;"
+                                     loading="lazy" decoding="async" width="60" height="40">
                             @endif
                             <h6 class="fw-semibold text-white mb-1">{{ $country->name }}</h6>
                             <small class="text-muted">{{ $country->region }}</small>

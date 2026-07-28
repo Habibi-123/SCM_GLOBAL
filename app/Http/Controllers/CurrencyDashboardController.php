@@ -50,11 +50,18 @@ class CurrencyDashboardController extends Controller
             ->orderBy('target_currency')
             ->paginate(20);
 
-        // Histori untuk grafik tren, khusus mata uang negara yang dipilih
+        // Histori 7 hari terakhir (1 data per hari, diambil dari update jam terbaru)
         $history = CurrencyRate::where('base_currency', $base)
             ->where('target_currency', $target)
-            ->orderBy('fetched_at')
-            ->get(['rate', 'fetched_at']);
+            ->where('fetched_at', '>=', now()->subDays(6)->startOfDay())
+            ->get()
+            ->groupBy(function ($item) {
+                return \Carbon\Carbon::parse($item->fetched_at)->format('Y-m-d');
+            })
+            ->map(function ($dayRates) {
+                return $dayRates->sortByDesc('fetched_at')->first();
+            })
+            ->values();
 
         return view('currency.index', compact(
             'base', 'target', 'countries', 'selectedCountry', 'selectedCode', 'latestRates', 'history'

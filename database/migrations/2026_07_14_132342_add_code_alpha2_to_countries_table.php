@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('countries', function (Blueprint $table) {
-            // Dibutuhkan untuk mencocokkan data pelabuhan (World Port Index)
-            // yang pakai format ISO Alpha-2, bukan Alpha-3 seperti kolom `code` kita
-            $table->string('code_alpha2', 2)->nullable()->after('code');
+            if (!Schema::hasColumn('countries', 'code_alpha2')) {
+                $table->string('code_alpha2', 2)->nullable()->after('code');
+            }
         });
     }
 

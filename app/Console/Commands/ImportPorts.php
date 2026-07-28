@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ImportPorts extends Command
 {
-    protected $signature = 'ports:import {file=world_port_index.csv}';
+    protected $signature = 'ports:import {file=World_Port_Index.csv}';
 
     protected $description = 'Import data pelabuhan dari CSV World Port Index ke tabel ports';
 

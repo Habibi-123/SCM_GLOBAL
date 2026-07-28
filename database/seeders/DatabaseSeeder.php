@@ -15,10 +15,26 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin']);
+        $userRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'User']);
+
+        $admin = User::firstOrCreate(
+            ['email' => 'habibi@gmail.com'],
+            [
+                'name' => 'Habibi',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            ]
+        );
+        $admin->assignRole($adminRole);
+
+        $testUser = User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            ]
+        );
+        $testUser->assignRole($userRole);
 
         $this->call([
             PositiveWordSeeder::class,

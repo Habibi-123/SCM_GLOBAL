@@ -139,7 +139,7 @@
                     const item = document.createElement('a');
                     item.href = `{{ route('news.index') }}?country=${c.code}`;
                     item.className = 'list-group-item list-group-item-action d-flex align-items-center gap-2';
-                    item.innerHTML = `<img src="${c.flag_url}" style="width:20px;"> ${c.name}`;
+                    item.innerHTML = `<img src="${c.flag_url}" style="width:20px; height:13px; object-fit:cover;" loading="lazy" decoding="async" width="20" height="13"> ${c.name}`;
                     dropdown.appendChild(item);
                 });
 
